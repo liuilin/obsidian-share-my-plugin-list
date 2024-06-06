@@ -144,10 +144,37 @@ export default class ShareMyPlugin extends Plugin {
 			this.app.workspace.openLinkText(path, path, this.settings.exportFileNewLeaf);
 		}
 	}
+	
+	sortPluginsByName(plugins: any): any {
+		// 将插件对象的键提取为数组，并根据插件名称排序
+		const sortedKeys = Object.keys(plugins).sort((a, b) => {
+			const nameA = plugins[a].manifest.name.toUpperCase();
+			const nameB = plugins[b].manifest.name.toUpperCase();
+			if (nameA < nameB) {
+				return -1;
+			}
+			if (nameA > nameB) {
+				return 1;
+			}
+			return 0;
+		});
 
+		// 创建一个新的对象，用于存储排序后的插件
+		const sortedPlugins: any = {};
+		for (const key of sortedKeys) {
+			sortedPlugins[key] = plugins[key];
+		}
+
+		// 打印排序后的插件对象
+		// console.log(JSON.stringify(sortedPlugins, null, 2));
+
+		return sortedPlugins;
+	}
 	genList(plugins: any): string {
 		this.debug("genList");
 		// const plugins = this.getActivePlugins();
+		// TODO sort by Alphabetical
+		plugins = this.sortPluginsByName(plugins)
 		this.debug(plugins)
 		let text: string[] = [];
 		for (let key in plugins) {
